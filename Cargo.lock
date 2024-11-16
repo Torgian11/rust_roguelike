@@ -1521,7 +1521,6 @@ dependencies = [
  "bracket-lib",
  "specs",
  "specs-derive",
- "tile_system",
 ]
 
 [[package]]
@@ -1791,13 +1790,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.86",
-]
-
-[[package]]
-name = "tile_system"
-version = "0.1.0"
-dependencies = [
- "bracket-lib",
 ]
 
 [[package]]
