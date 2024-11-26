@@ -1,16 +1,19 @@
 use bracket_lib::prelude::{BTerm, GameState};
 use specs::prelude::*;
 
-use super::map::{TileType, draw_map};
-use super::components::*;
-use super::player::player_input;
+use super::draw_map;
+use super::{VisibilitySystem, Position, Renderable};
+use super::player_input;
+
 
 pub struct State {
-    pub ecs: World,
+    pub ecs:World
 }
 
 impl State {
-    pub fn run_systems(&mut self) {
+    fn run_systems(&mut self) {
+        let mut vis = VisibilitySystem{};
+        vis.run_now(&self.ecs);
         self.ecs.maintain();
     }
 }
@@ -23,9 +26,7 @@ impl GameState for State {
         player_input(self, ctx);
         self.run_systems();
         
-        
-        let map = self.ecs.fetch::<Vec<TileType>>();
-        draw_map(&map, ctx);
+        draw_map(&self.ecs, ctx);
         
 
         let positions = self.ecs.read_storage::<Position>();
@@ -36,3 +37,4 @@ impl GameState for State {
         }
     }
 }
+

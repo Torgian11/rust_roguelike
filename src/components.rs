@@ -1,6 +1,6 @@
 use specs::prelude::*;
 use specs_derive::*;
-use bracket_lib::prelude::RGB;
+use bracket_lib::prelude::{Point, RGB};
 
 #[derive(Component)]
 pub struct Position {
@@ -18,3 +18,9 @@ pub struct Renderable {
 #[derive(Component, Debug)]
 pub struct Player {}
 
+#[derive(Component)]
+pub struct Viewshed {
+    pub visible_tiles: Vec<Point>,
+    pub range: i32,
+    pub dirty: bool
+}
