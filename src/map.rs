@@ -1,7 +1,5 @@
 use bracket_lib::prelude::{ Algorithm2D, BTerm, BaseMap, Point, RandomNumberGenerator, RGB };
 use std::cmp::{max, min};
-use super::Viewshed;
-use super::Player;
 use super::Rect;
 use specs::prelude::*;
 
@@ -156,21 +154,22 @@ pub fn draw_map(ecs: &World, ctx: &mut BTerm) {
     let mut y = 0;
     
     for (idx, tile) in map.tiles.iter().enumerate() {
+        // Render tile based on tile type
         if map.revealed_tiles[idx] {
             let glyph;
-            let mut fg;
+            let mut foreground;
             match tile {
                 TileType::Floor => {
                     glyph = bracket_lib::prelude::to_cp437('.');
-                    fg = RGB::from_f32(0.0, 0.5, 0.5);
+                    foreground = RGB::from_f32(0.0, 0.5, 0.5);
                 }
                 TileType::Wall => {
                     glyph = bracket_lib::prelude::to_cp437('#');
-                    fg = RGB::from_f32(0., 1.0, 0.);
+                    foreground = RGB::from_f32(0., 1.0, 0.);
                 }
             }
-            if !map.visible_tiles[idx] { fg = fg.to_greyscale() }
-            ctx.set(x,y,fg,RGB::from_f32(0., 0., 0.), glyph);
+            if !map.visible_tiles[idx] { foreground = foreground.to_greyscale() }
+            ctx.set(x,y,foreground,RGB::from_f32(0., 0., 0.), glyph);
         }
         
         // Move coordinates
