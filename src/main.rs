@@ -27,6 +27,8 @@ mod gui;
 pub use gui::*;
 mod gamelog;
 pub use gamelog::*;
+mod spawner;
+pub use spawner::*;
 
 fn main() -> BError {
     use bracket_lib::prelude::BTermBuilder;
@@ -53,47 +55,14 @@ fn main() -> BError {
 
     let map: Map = Map::new_map_rooms_and_corridors();
     let (player_x, player_y) = map.rooms[0].center();
+    let player_entity = spawner::player(&mut gs.ecs, player_x, player_y);
 
-    let mut rng = RandomNumberGenerator::new();
-    for (i, room) in map.rooms.iter().skip(1).enumerate() {
-        let (monster_x, monster_y) = room.center();
-        let glyph: bracket_lib::prelude::FontCharType;
-        let name: String;
-        let roll = rng.roll_dice(1, 2);
-        match roll {
-            1 => {glyph = bracket_lib::prelude::to_cp437('g'); name = "Goblin".to_string();}
-            _ => {glyph = bracket_lib::prelude::to_cp437('o'); name = "Orc".to_string();}
-        }
-
-        gs.ecs.create_entity()
-            .with(Position {x: monster_x, y: monster_y})
-            .with(Renderable {
-                glyph: glyph,
-                foreground: RGB::named(bracket_lib::color::RED),
-                background: RGB::named(bracket_lib::prelude::BLACK),
-            })
-            .with(Monster{})
-            .with(Name{name: format!("{} {}", &name, i)})
-            .with(Viewshed{visible_tiles: Vec::new(), range: 8, dirty: true})
-            .with(BlocksTile{})
-            .with(CombatStats{max_hp: 16, hp: 16, defense: 1, power: 4})
-            .build();
+    gs.ecs.insert(RandomNumberGenerator::new());
+    for room in map.rooms.iter().skip(1) {
+        let (x, y) = room.center();
+        spawner::random_monster(&mut gs.ecs, x, y);
     }
-    
-    
-    let player_entity = gs.ecs.create_entity()
-        .with(Position { x: player_x, y: player_y})
-        .with(Renderable {
-            glyph: bracket_lib::prelude::to_cp437('&'),
-            foreground: RGB::named(bracket_lib::color::YELLOW),
-            background: RGB::named(bracket_lib::color::BLACK),
-        })
-        .with(Player{})
-        .with(Name{name: "Player".to_string()})
-        .with(Viewshed{ visible_tiles: Vec::new(), range: 8, dirty: true })
-        .with(CombatStats{ max_hp: 30, hp: 30, defense: 2, power: 5})
-        .build();
-    
+
     gs.ecs.insert(player_entity);
     gs.ecs.insert(map);
     gs.ecs.insert(Point::new(player_x, player_y));

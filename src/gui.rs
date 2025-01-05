@@ -1,4 +1,4 @@
-use bracket_lib::prelude::{RGB, Console, BTerm, Point};
+use bracket_lib::prelude::{RGB, BTerm, Point};
 use bracket_lib::color::{BLACK, GREY, MAGENTA, RED, WHITE};
 use specs::prelude::*;
 use super::{CombatStats, Player, GameLog, Map, Name, Position};
