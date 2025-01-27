@@ -1,6 +1,6 @@
 use specs::prelude::*;
-use super::{Viewshed, Name, Monster, Map, Position, WantsToMelee, RunState};
-use bracket_lib::prelude::{Point};
+use super::{Viewshed, Monster, Map, Position, WantsToMelee, RunState};
+use bracket_lib::prelude::Point;
 
 pub struct MonsterAI {}
 
@@ -20,7 +20,7 @@ impl<'a> System<'a> for MonsterAI {
         let (mut map, player_pos, player_entity, runstate, entities, mut viewshed, monster, mut position, mut wants_to_melee) = data;
 
         if *runstate != RunState::MonsterTurn { return; }
-        for (entity, mut viewshed, _monster, mut pos) in (&entities, &mut viewshed, &monster, &mut position).join() {
+        for (entity, viewshed, _monster, pos) in (&entities, &mut viewshed, &monster, &mut position).join() {
             let monster_pos = Point::new(pos.x, pos.y);
             let current_distance = bracket_lib::geometry::DistanceAlg::Pythagoras.distance2d(monster_pos, *player_pos);
             if current_distance < 1.5 {

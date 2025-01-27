@@ -39,14 +39,14 @@ impl<'a> System<'a> for VisibilitySystem {
             }
             
 
-            let plyr: Option<&Player> = player.get(ent);
-            if let Some(_plyr) = plyr {
-                for vis in viewshed.visible_tiles.iter() {
-                    let idx = map.xy_idx(vis.x, vis.y);
-                    map.revealed_tiles[idx] = true;
+            // let plyr: Option<&Player> = player.get(ent);
+            // if let Some(_plyr) = plyr {
+            //     for vis in viewshed.visible_tiles.iter() {
+            //         let idx = map.xy_idx(vis.x, vis.y);
+            //         map.revealed_tiles[idx] = true;
                     
-                }
-            }
+            //     }
+            // }
         }
     }
 }

@@ -1,5 +1,4 @@
 use specs::prelude::*;
-use bracket_lib::terminal::console;
 use super::{CombatStats, SufferDamage, Player, Name, gamelog::GameLog};
 
 pub struct DamageSystem {}

@@ -3,15 +3,16 @@ use std::cmp::{max, min};
 use super::Rect;
 use specs::prelude::*;
 
+pub const MAPWIDTH: usize = 80;
+pub const MAPHEIGHT: usize = 50;
+// Map sizing
+pub const MAPCOUNT: usize = MAPHEIGHT * MAPWIDTH;
+
 #[derive(PartialEq, Copy, Clone)]
 pub enum TileType {
     Wall, Floor
 }
 
-const MAPWIDTH: usize = 80;
-const MAPHEIGHT: usize = 50;
-// Map sizing
-const MAPCOUNT: usize = MAPHEIGHT * MAPWIDTH;
 
 pub struct Map {
     pub tiles: Vec<TileType>,
@@ -107,7 +108,7 @@ impl Map {
             tiles: vec![TileType::Wall; MAPCOUNT],
             rooms: Vec::new(),
             width: 80,
-            height: 50,
+            height: 40,
             revealed_tiles: vec![false; MAPCOUNT],
             visible_tiles: vec![false; MAPCOUNT],
             blocked: vec![false; MAPCOUNT],
@@ -115,7 +116,7 @@ impl Map {
         };
         
         const MAX_ROOMS: i32 = 30;
-        const MIN_SIZE: i32 = 3;
+        const MIN_SIZE: i32 = 6;
         const MAX_SIZE: i32 = 10;
     
         let mut rng = RandomNumberGenerator::new();
@@ -123,8 +124,8 @@ impl Map {
         for _ in 0..MAX_ROOMS {
             let room_width = rng.range(MIN_SIZE, MAX_SIZE);
             let room_height = rng.range(MIN_SIZE, MAX_SIZE);
-            let x = rng.roll_dice(1, 80 - room_width - 1) - 1;
-            let y = rng.roll_dice(1, 50 - room_height - 1) - 1;
+            let x = rng.roll_dice(1, map.width - room_width - 1) - 1;
+            let y = rng.roll_dice(1, map.height - room_height - 1) - 1;
     
             let new_room = Rect::new(x, y, room_width, room_height);
             let mut ok = true;
@@ -165,9 +166,9 @@ impl Map {
         // Walls
         for x in 0..80 {
             map[self.xy_idx(x,0)] = TileType::Wall;
-            map[self.xy_idx(x, 49)] = TileType::Wall;
+            map[self.xy_idx(x, 39)] = TileType::Wall;
         }
-        for y in 0..50 {
+        for y in 0..40 {
             map[self.xy_idx(0, y)] = TileType::Wall;
             map[self.xy_idx(79, y)] = TileType::Wall;
         }
@@ -177,7 +178,7 @@ impl Map {
 
         for _i in 0..400 {
             let x = rng.roll_dice(1, 79);
-            let y = rng.roll_dice(1, 49);
+            let y = rng.roll_dice(1, 39);
             let idx = self.xy_idx(x, y);
             if idx != self.xy_idx(40, 25) {
                 map[idx] = TileType::Wall;
@@ -198,17 +199,6 @@ impl Map {
             self.blocked[i] = *tile == TileType::Wall;
         }
     }
-    // fn is_tile_blocked(&self, x:i32, y:i32) -> bool {
-    //     // if x/y tile is blocked by player or monster, return true
-    //     let tile_idx = self.xy_idx(x, y);
-
-    //     if self.tiles[idx as usize] ==  {
-    //         true
-    //     }
-
-    //     false
-    // }
-    
 }
 
 pub fn draw_map(ecs: &World, ctx: &mut BTerm) {
@@ -237,7 +227,7 @@ pub fn draw_map(ecs: &World, ctx: &mut BTerm) {
         
         // Move coordinates
         x += 1;
-        if x > 79 {
+        if x > MAPWIDTH as i32-1 {
             x = 0;
             y += 1;
         }
