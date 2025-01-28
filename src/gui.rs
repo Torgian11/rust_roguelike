@@ -19,8 +19,8 @@ pub fn draw_ui(ecs: &World, ctx: &mut BTerm) {
     let log = ecs.fetch::<GameLog>();
     let mut y = 44;
     for s in log.entries.iter().rev() {
-        if y < 39 {ctx.print(2, y, s);}
-        y+=1;
+        if y < 49 {ctx.print(2, y, s);}
+        y += 1;
     }
 
     let mouse_pos = ctx.mouse_pos();
